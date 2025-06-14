@@ -6,18 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-        public function up()
+       public function up(): void
+        {
+            Schema::table('users', function (Blueprint $table) {
+                if (!Schema::hasColumn('users', 'role_id')) {
+                    $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade');
+                }
+            });
+        }
+
+
+
+    public function down(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->string('original_filename')->nullable();
+        Schema::table('users', function (Blueprint $table) {
+            if (Schema::hasColumn('users', 'role_id')) {
+                $table->dropForeign(['role_id']);
+                $table->dropColumn('role_id');
+            }
         });
     }
 
-
-    public function down()
-    {
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->dropColumn('original_filename');
-        });
-    }
 };

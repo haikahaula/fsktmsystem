@@ -56,7 +56,7 @@
                         <p><strong>Assigned By:</strong> {{ $task->assignedBy->name ?? '-' }}</p>
                         <p><strong>Due Date:</strong> {{ $task->due_date }}</p>
 
-                        <p class="mt-2"><strong>Staff Upload:</strong>
+                        {{-- <p class="mt-2"><strong>Staff Upload:</strong>
                             @if ($task->staff_document)
                                 <a href="{{ asset('storage/' . $task->staff_document) }}" target="_blank" class="text-blue-500 underline">
                                     {{ $task->staff_original_filename }}
@@ -64,7 +64,18 @@
                             @else
                                 No Staff Upload
                             @endif
-                        </p>
+                        </p> --}}
+                        @if($task->document)
+                            <div class="mb-4">
+                                <strong>Document:</strong>
+                                <p>
+                                    <a href="{{ route('academic-head.tasks.download', $task->id) }}"
+                                    class="text-blue-600 underline hover:text-blue-800">
+                                    Download {{ $task->original_filename ?? 'Document' }}
+                                    </a>
+                                </p>
+                            </div>
+                        @endif
 
                         <div class="mt-4">
                             @forelse ($task->comments as $comment)

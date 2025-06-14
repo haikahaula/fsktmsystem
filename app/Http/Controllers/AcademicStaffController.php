@@ -96,7 +96,8 @@ class AcademicStaffController extends Controller
 
         return redirect()->route('academic-staff.tasks.index')->with('success', 'Task status updated.');
     }
-
+    
+    // Document
     public function uploadDocument(Request $request, Task $task)
     {
         $request->validate([

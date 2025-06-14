@@ -12,16 +12,26 @@
     <p><strong>Description:</strong> {{ $task->description }}</p>
     <p><strong>Assigned By:</strong> {{ $task->assignedBy->name ?? '-' }}</p>
     <p><strong>Due Date:</strong> {{ $task->due_date }}</p>
-    <p><strong>Staff Uploaded Document:</strong> 
-        @if ($task->staff_document)
-            <a href="{{ asset('storage/' . $task->staff_document) }}" class="text-blue-600 underline" target="_blank">
-                {{ $task->staff_original_filename }}
-            </a>
-        @else
-            No Staff Document
+
+    {{-- Documents Section --}}
+    @foreach($task->staff_document as $document)
+    <div class="mb-2">
+        <a href="{{ route('documents.download', $document->id) }}" class="text-blue-600 underline">
+            {{ $document->original_name }}
+        </a>
+
+        @if(auth()->id() === $document->user_id || auth()->user()->role === 'Admin')
+            <form action="{{ route('documents.destroy', $document->id) }}" method="POST" class="inline ml-2"
+                  onsubmit="return confirm('Are you sure?');">
+                @csrf
+                @method('DELETE')
+                <button class="text-red-600 hover:underline">Delete</button>
+            </form>
         @endif
-    </p>
-    
+    </div>
+    @endforeach
+
+    {{-- Status --}}
     <p><strong>Status:</strong> {{ ucfirst($task->status) }}</p>
 
     <!-- Show upload form only if user is assigned to the task -->

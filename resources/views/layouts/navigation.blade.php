@@ -38,6 +38,10 @@
                             <x-nav-link :href="route('academic-head.groups.index')" :active="request()->routeIs('academic-head.groups.index')">
                                 Manage Group
                             </x-nav-link>
+                            <x-nav-link :href="route('academic-head.tasks.activities')" :active="request()->routeIs('academic-head.tasks.activities')">
+                                Task Activities
+                            </x-nav-link>
+
                         @elseif(Str::contains($user->email, 'staff'))
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 Staff Dashboard
@@ -124,6 +128,16 @@
                     <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         Head Dashboard
                     </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('academic-head.tasks.index')" :active="request()->routeIs('academic-head.tasks.index')">
+                        Manage Tasks
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('academic-head.groups.index')" :active="request()->routeIs('academic-head.groups.index')">
+                        Manage Group
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('academic-head.tasks.activities')" :active="request()->routeIs('academic-head.tasks.activities')">
+                        Task Activities
+                    </x-responsive-nav-link>
+
                 @elseif(Str::contains($user->email, 'staff'))
                     <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         Staff Dashboard

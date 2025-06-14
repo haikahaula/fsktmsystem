@@ -13,7 +13,8 @@ class RoleSeeder extends Seeder
         $roles = ['Admin', 'Academic Head', 'Academic Staff', 'Accountant'];
 
         foreach ($roles as $role) {
-            Role::create(['name' => $role]);
+            Role::firstOrCreate(['name' => $role]);
         }
+
     }
 }

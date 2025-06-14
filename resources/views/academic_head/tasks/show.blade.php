@@ -35,17 +35,18 @@
         </div>
     </div>
 
+    {{-- Documents Section --}}
     @if($task->document)
-        <div class="mb-4">
-            <strong>Document:</strong>
-            <p>
-                <a href="{{ route('academic-head.tasks.download', $task->id) }}"
-                class="text-blue-600 underline hover:text-blue-800">
-                Download {{ $task->original_filename ?? 'Document' }}
-                </a>
-            </p>
-        </div>
-    @endif
+            <div class="mb-4">
+                <strong>Document:</strong>
+                <p>
+                    <a href="{{ route('academic-head.tasks.download', $task->id) }}"
+                    class="text-blue-600 underline hover:text-blue-800">
+                    Download {{ $task->original_filename ?? 'Document' }}
+                    </a>
+                </p>
+            </div>
+        @endif
 
     {{-- Comments Section --}}
     <div class="mt-8">
@@ -66,11 +67,11 @@
                         @if (auth()->id() === $comment->user_id)
                             <div class="mt-2 space-x-2">
                                 <a href="{{ route('academic-head.comments.edit', $comment->id) }}"
-                                class="text-sm text-blue-600 hover:underline">Edit</a>
+                                   class="text-sm text-blue-600 hover:underline">Edit</a>
 
                                 <form action="{{ route('academic-head.comments.destroy', $comment->id) }}"
-                                    method="POST" class="inline"
-                                    onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                      method="POST" class="inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this comment?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-sm text-red-600 hover:underline">Delete</button>
@@ -85,19 +86,14 @@
 
     {{-- Add New Comment Form --}}
     <div class="mt-6">
-        @include('comments._form', ['task' => $task, 'baseRoute' => 'academic-head'])            
-        @csrf
-            <input type="hidden" name="task_id" value="{{ $task->id }}">
-                <input type="hidden" name="redirect_url" value="{{ url()->previous() }}">
-            
-        </form>
+        @include('comments._form', ['task' => $task, 'baseRoute' => 'academic-head'])
     </div>
 
-        <div class="mt-8">
-            <a href="{{ route('academic-head.tasks.index') }}"
-            class="text-blue-600 underline hover:text-blue-800">
-                ← Back to Tasks
-            </a>
-        </div>
+    <div class="mt-8">
+        <a href="{{ route('academic-head.tasks.index') }}"
+           class="text-blue-600 underline hover:text-blue-800">
+            ← Back to Tasks
+        </a>
+    </div>
 </div>
 @endsection

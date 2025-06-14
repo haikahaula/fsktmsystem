@@ -8,22 +8,6 @@ use App\Models\User;
 use App\Models\Group;
 use App\Models\Comment;
 
-/**
- * App\Models\Task
- *
- * @property int $id
- * @property string $title
- * @property string|null $description
- * @property int|null $created_by
- * @property int|null $assigned_to_id
- * @property string|null $assigned_to_type
- * @property int|null $group_id
- * @property string $due_date
- * @property string|null $document
- * @property string $status
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
- */
-
 class Task extends Model
 {
     use HasFactory;
@@ -32,37 +16,35 @@ class Task extends Model
         'title',
         'description',
         'created_by',
-        'assigned_to_id',
-        'assigned_to_type',
         'group_id',
         'due_date',
-        'document',
         'status',
-        'original_filename',
-        'staff_document',
-        'staff_original_filename',
+        'assigned_to_id',
+        'assigned_to_type',
     ];
 
-    // Many users assigned to this task (pivot table task_user)
+    // Cast JSON array field
+    protected $casts = [
+        'staff_documents' => 'array',
+    ];
+
+    // Many users assigned to this task
     public function users()
     {
         return $this->belongsToMany(User::class, 'task_user', 'task_id', 'user_id');
     }
 
-    // Assigned to a specific group
     public function assignedGroup()
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
 
-    // Shortcut if you still want an alias for the same relation
     public function group()
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
 
-    // Who created the task
-    public function assignedBy()
+    public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
@@ -71,4 +53,10 @@ class Task extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
 }

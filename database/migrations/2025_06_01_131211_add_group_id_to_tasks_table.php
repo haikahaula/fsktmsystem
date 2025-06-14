@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up()
     {
-        // Schema::table('tasks', function (Blueprint $table) {
-        //     $table->unsignedBigInteger('group_id')->nullable()->after('assigned_to_id');
-        //     $table->foreign('group_id')->references('id')->on('groups')->onDelete('set null');
-        // });
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->foreignId('group_id')->nullable()->after('description'); // atau column lain yang memang wujud
+            $table->foreign('group_id')->references('id')->on('groups')->onDelete('set null');
+        });
     }
 
     public function down()

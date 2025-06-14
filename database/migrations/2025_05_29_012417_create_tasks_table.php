@@ -16,9 +16,6 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('assigned_to_id')->nullable();
-            $table->string('assigned_to_type')->nullable();
-            $table->unsignedBigInteger('group_id')->nullable();
             $table->date('due_date');
             $table->string('document')->nullable();
             $table->string('status')->default('not started');

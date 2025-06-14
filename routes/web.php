@@ -22,14 +22,18 @@ Route::get('/dashboard', function () {
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
+ Route::get('/academic-head/tasks/activities', [AcademicHeadController::class, 'allTaskActivities'])
+ ->name('academic-head.tasks.activities');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Shared document upload route
+    // Shared document upload, download, and delete
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
 
     // Notifications
     Route::post('/notifications/mark-all-read', function () {
@@ -51,10 +55,6 @@ Route::prefix('academic-staff')->middleware(['auth'])->name('academic-staff.')->
     Route::get('/tasks/{task}', [AcademicStaffController::class, 'show'])->name('tasks.show');
     Route::get('/tasks/{task}/edit', [AcademicStaffController::class, 'edit'])->name('tasks.edit');
     Route::put('/tasks/{task}', [AcademicStaffController::class, 'update'])->name('tasks.update');
-
-    // Upload document (GET + POST)
-    Route::get('/tasks/{task}/upload', [AcademicStaffController::class, 'showUploadForm'])->name('tasks.upload.view');
-    Route::post('/tasks/{task}/upload', [AcademicStaffController::class, 'uploadDocument'])->name('tasks.upload');
 
     // Groups
     Route::get('/groups', [AcademicStaffController::class, 'viewGroups'])->name('groups.index');
@@ -92,6 +92,14 @@ Route::prefix('academic-head')->middleware(['auth'])->name('academic-head.')->gr
     Route::resource('comments', CommentController::class)
         ->only(['store', 'edit', 'update', 'destroy'])
         ->names('comments');
+
+    // Document management 
+    Route::get('/documents/{task}', [DocumentController::class, 'show'])->name('documents.show');
+    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{document}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
+    Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
+    Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/documents/download/{document}', [DocumentController::class, 'download'])->name('documents.download');
 });
 
 require __DIR__.'/auth.php';

@@ -36,13 +36,11 @@
         </div>
 
         <div class="mb-4">
-            <label for="assigned_to_id" class="block font-semibold mb-1">Assign to Users</label>
-            <small class="text-gray-600">Select one or more users</small>
-            <select name="assigned_to_id[]" multiple
-                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
+            <label for="assigned_user_id" class="block font-semibold mb-1">Assign to User(s)</label>
+            <select name="assigned_user_id[]" multiple class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="">-- Select User (optional) --</option>
                 @foreach ($users as $user)
-                    <option value="{{ $user->id }}" @if(collect(old('assigned_to_id'))->contains($user->id)) selected @endif>
+                    <option value="{{ $user->id }}" {{ old('assigned_user_id') == $user->id ? 'selected' : '' }}>
                         {{ $user->name }} ({{ $user->email }})
                     </option>
                 @endforeach
@@ -51,21 +49,21 @@
 
         <div class="mb-6">
             <label class="block font-semibold mb-1">Or assign to Group</label>
-            <select name="group_id" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <select name="assigned_group_id" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <option value="">-- Select Group (optional) --</option>
                 @foreach ($groups as $group)
-                    <option value="{{ $group->id }}" @if(old('group_id') == $group->id) selected @endif>
+                    <option value="{{ $group->id }}" {{ old('assigned_group_id') == $group->id ? 'selected' : '' }}>
                         {{ $group->name }}
                     </option>
                 @endforeach
             </select>
-            <p class="text-sm text-gray-500 mt-1">You can assign to users or a group, but not both.</p>
+            <p class="text-sm text-gray-500 mt-1">You can assign to a user or a group, but not both.</p>
         </div>
 
         <div class="mb-4">
-            <label class="block font-semibold mb-1" for="document">Attach Document (optional)</label>
-            <input type="file" name="document" id="document" accept=".pdf,.doc,.docx,.txt"
-                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <label class="block font-semibold">Upload Documents:</label>
+            <input type="file" name="documents[]" multiple class="w-full">
+            <p class="text-sm text-gray-500 mt-1">You can upload multiple files (pdf, docx, txt, jpg, png, max 2MB each).</p>
         </div>
 
         <button type="submit"
