@@ -10,6 +10,12 @@ use App\Models\Document;
 
 class DocumentController extends Controller
 {
+    public function index(Task $task)
+    {
+        $documents = $task->documents; 
+        return view('academic-staff.tasks.documents.index', compact('task', 'documents'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -17,18 +23,22 @@ class DocumentController extends Controller
             'document' => 'required|file|mimes:pdf,doc,docx,xlsx,xls|max:2048',
         ]);
 
-        // Store file and get necessary details
         $file = $request->file('document');
         $path = $file->store('documents', 'public');
         $originalName = $file->getClientOriginalName();
 
-        // Save to database
-        Document::create([
+        // Debug sementara
+        logger("Uploading file: $originalName at $path");
+
+        // SAVE TO DB
+        $doc = Document::create([
             'task_id' => $request->task_id,
-            'user_id' => Auth::id(), // assuming you've changed staff_id to user_id
+            'user_id' => Auth::id(),
             'filename' => $path,
-            'original_filename' => $originalName,
+            'original_name' => $originalName,
         ]);
+
+        logger("Document ID saved: " . $doc->id); // Tambah ni untuk confirm save
 
         return redirect()->back()->with('success', 'Document uploaded successfully.');
     }
@@ -39,9 +49,30 @@ class DocumentController extends Controller
         return view('academic_head.documents.show', compact('task'));
     }
 
-    public function download(Document $document)
+    public function download($id)
     {
-        return Storage::disk('public')->download($document->filename, $document->original_name);
+        $document = Document::with('task.users')->findOrFail($id);
+        $user = Auth::user();
+
+        $isUploader = $document->user_id === $user->id;
+        $isTaskMember = false;
+
+        if ($document->task && $document->task->users) {
+            $isTaskMember = $document->task->users->contains($user->id);
+        }
+
+        if (!($isUploader || $isTaskMember)) {
+            abort(403, 'Unauthorized access to this document.');
+        }
+
+        if (!Storage::disk('public')->exists($document->filename)) {
+            abort(404, 'Document not found.');
+        }
+
+        return response()->download(
+            storage_path('app/public/' . $document->filename),
+            $document->original_name
+        );
     }
 
     public function edit(Document $document)

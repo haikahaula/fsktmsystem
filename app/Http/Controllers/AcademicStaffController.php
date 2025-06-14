@@ -115,7 +115,7 @@ class AcademicStaffController extends Controller
 
         $task->update([
             'staff_document' => $path,
-            'staff_original_filename' => $file->getClientOriginalName(),
+            'staff_original_name' => $file->getClientOriginalName(),
         ]);
 
         return redirect()->route('academic-staff.tasks.show', $task)->with('success', 'Your document was uploaded successfully.');
@@ -148,5 +148,36 @@ class AcademicStaffController extends Controller
 
         return view('academic_staff.groups.show', compact('group'));
     }
+
+    public function activities()
+    {
+        $userId = Auth::id();
+
+        $tasks = Task::whereHas('users', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->orWhereHas('group.users', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->with(['users', 'documents.user']) // penting!
+            ->get();
+
+        return view('academic_staff.tasks.activities', compact('tasks'));
+    }
+
+    public function showDocuments($taskId)
+    {
+        $userId = Auth::id();
+
+        $task = Task::with(['documents.user']) // eager-load uploader info
+            ->where(function ($q) use ($userId) {
+                $q->whereHas('users', fn($q) => $q->where('user_id', $userId))
+                ->orWhereHas('group.users', fn($q) => $q->where('user_id', $userId));
+            })
+            ->findOrFail($taskId);
+
+        return view('academic_staff.documents.show', compact('task'));
+    }
+
 
 }

@@ -20,7 +20,7 @@
 
         <!-- Optional: Staff Upload (with current document display) -->
         <div class="mb-4">
-            <label for="document" class="block font-semibold mb-1">Replace Staff Upload (optional)</label>
+            <label for="document" class="block font-semibold mb-1">Documents</label>
             <input type="file" name="document" id="document" accept=".pdf,.doc,.docx,.txt,.pptx"
                    class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
 
@@ -28,7 +28,7 @@
                 <p class="mt-2 text-sm text-gray-600">
                     Current: 
                     <a href="{{ asset('storage/' . $task->staff_document) }}" class="text-blue-600 underline" target="_blank">
-                        {{ $task->staff_original_filename }}
+                        {{ $task->staff_original_name }}
                     </a>
                 </p>
             @endif

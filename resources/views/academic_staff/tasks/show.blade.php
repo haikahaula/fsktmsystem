@@ -10,26 +10,33 @@
 
     <p><strong>Title:</strong> {{ $task->title }}</p>
     <p><strong>Description:</strong> {{ $task->description }}</p>
-    <p><strong>Assigned By:</strong> {{ $task->assignedBy->name ?? '-' }}</p>
+    <p><strong>Assigned By:</strong> {{ $task->createdBy->name ?? '-' }}</p>
     <p><strong>Due Date:</strong> {{ $task->due_date }}</p>
 
     {{-- Documents Section --}}
-    @foreach($task->staff_document as $document)
-    <div class="mb-2">
-        <a href="{{ route('documents.download', $document->id) }}" class="text-blue-600 underline">
-            {{ $document->original_name }}
-        </a>
+    @if ($task->documents && $task->documents->isNotEmpty())
+        @foreach($task->documents as $document)
+            <div class="mb-2">
+                <a href="{{ route('documents.download', $document->id) }}" class="text-blue-600 underline">
+                    {{ $document->original_name }}
+                </a>
+                <small class="block text-gray-500">
+                    Uploaded by {{ $document->user->name ?? 'Unknown' }} on {{ $document->created_at->format('d M Y') }}
+                </small>
 
-        @if(auth()->id() === $document->user_id || auth()->user()->role === 'Admin')
-            <form action="{{ route('documents.destroy', $document->id) }}" method="POST" class="inline ml-2"
-                  onsubmit="return confirm('Are you sure?');">
-                @csrf
-                @method('DELETE')
-                <button class="text-red-600 hover:underline">Delete</button>
-            </form>
-        @endif
-    </div>
-    @endforeach
+                @if(auth()->id() === $document->user_id || auth()->user()->hasRole('Admin'))
+                    <form action="{{ route('documents.destroy', $document->id) }}" method="POST" class="inline ml-2"
+                        onsubmit="return confirm('Are you sure?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="text-red-600 hover:underline">Delete</button>
+                    </form>
+                @endif
+            </div>
+        @endforeach
+    @else
+        <p class="text-gray-500 italic">No documents uploaded.</p>
+    @endif
 
     {{-- Status --}}
     <p><strong>Status:</strong> {{ ucfirst($task->status) }}</p>

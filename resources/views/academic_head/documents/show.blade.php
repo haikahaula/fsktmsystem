@@ -18,7 +18,7 @@
             @forelse ($headDocs as $i => $doc)
                 <tr>
                     <td class="border px-4 py-2">{{ $i + 1 }}</td>
-                    <td class="border px-4 py-2">{{ $doc->original_filename }}</td>
+                    <td class="border px-4 py-2">{{ $doc->original_name }}</td>
                     <td class="border px-4 py-2">
                         <a href="{{ route('academic-head.documents.download', $doc->id) }}" class="text-blue-600 underline">View</a>
                         <a href="{{ route('academic-head.documents.edit', $doc->id) }}" class="text-yellow-600 underline ml-2">Edit</a>
@@ -50,7 +50,7 @@
             @forelse ($staffDocs as $i => $doc)
                 <tr>
                     <td class="border px-4 py-2">{{ $i + 1 }}</td>
-                    <td class="border px-4 py-2">{{ $doc->original_filename }}</td>
+                    <td class="border px-4 py-2">{{ $doc->original_name }}</td>
                     <td class="border px-4 py-2">
                         <a href="{{ route('academic-head.documents.download', $doc->id) }}" class="text-blue-600 underline">View</a>
                     </td>

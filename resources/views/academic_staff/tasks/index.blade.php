@@ -20,7 +20,7 @@
             @forelse ($tasks as $index => $task)
                 <tr>
                     <td class="px-4 py-2 border">{{ $index + 1 }}</td>
-                    <td class="px-4 py-2 border">{{ $task->assignedBy->name ?? '-' }}</td>
+                    <td class="px-4 py-2 border">{{ $task->createdBy->name ?? '-' }}</td>
                     <td class="px-4 py-2 border">{{ $task->title }}</td>
                     <td class="px-4 py-2 border">{{ Str::limit($task->description, 50) }}</td>
                     <td class="px-4 py-2 border">{{ $task->due_date }}</td>
@@ -53,13 +53,13 @@
                         <h2 class="text-xl font-semibold mb-4">Task Details</h2>
                         <p><strong>Title:</strong> {{ $task->title }}</p>
                         <p><strong>Description:</strong> {{ $task->description }}</p>
-                        <p><strong>Assigned By:</strong> {{ $task->assignedBy->name ?? '-' }}</p>
+                        <p><strong>Assigned By:</strong> {{ $task->createdBy->name ?? '-' }}</p>
                         <p><strong>Due Date:</strong> {{ $task->due_date }}</p>
 
                         {{-- <p class="mt-2"><strong>Staff Upload:</strong>
                             @if ($task->staff_document)
                                 <a href="{{ asset('storage/' . $task->staff_document) }}" target="_blank" class="text-blue-500 underline">
-                                    {{ $task->staff_original_filename }}
+                                    {{ $task->staff_original_name }}
                                 </a>
                             @else
                                 No Staff Upload
@@ -71,7 +71,7 @@
                                 <p>
                                     <a href="{{ route('academic-head.tasks.download', $task->id) }}"
                                     class="text-blue-600 underline hover:text-blue-800">
-                                    Download {{ $task->original_filename ?? 'Document' }}
+                                    Download {{ $task->original_name ?? 'Document' }}
                                     </a>
                                 </p>
                             </div>

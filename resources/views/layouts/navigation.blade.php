@@ -27,6 +27,9 @@
                             <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.index')">
                                 Manage Roles
                             </x-nav-link>
+                            <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.index')">
+                                Manage Roles
+                            </x-nav-link>
 
                         @elseif(Str::contains($user->email, 'head'))
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
@@ -51,6 +54,9 @@
                             </x-nav-link>
                             <x-nav-link :href="route('academic-staff.groups.index')" :active="request()->routeIs('academic-staff.groups.index')">
                                 My Groups
+                            </x-nav-link>
+                            <x-nav-link :href="route('academic-staff.tasks.activities')" :active="request()->routeIs('academic-staff.tasks.activities')">
+                                Task Activities
                             </x-nav-link>
                         @endif
                     @endif

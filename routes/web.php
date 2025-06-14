@@ -55,6 +55,10 @@ Route::prefix('academic-staff')->middleware(['auth'])->name('academic-staff.')->
     Route::get('/tasks/{task}', [AcademicStaffController::class, 'show'])->name('tasks.show');
     Route::get('/tasks/{task}/edit', [AcademicStaffController::class, 'edit'])->name('tasks.edit');
     Route::put('/tasks/{task}', [AcademicStaffController::class, 'update'])->name('tasks.update');
+    Route::get('/task-activities', [AcademicStaffController::class, 'activities'])->name('tasks.activities');
+    Route::get('/tasks/{task}/documents', [AcademicStaffController::class, 'showDocuments'])
+        ->name('tasks.documents');
+
 
     // Groups
     Route::get('/groups', [AcademicStaffController::class, 'viewGroups'])->name('groups.index');

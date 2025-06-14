@@ -48,26 +48,31 @@ class AcademicHeadController extends Controller
             return back()->withErrors('Please assign the task to either users or a group, not both.')->withInput();
         }
 
-        $path = null;
-        $originalName = null;
-
-        if ($request->hasFile('document')) {
-            $file = $request->file('document');
-            $originalName = $file->getClientOriginalName();
-            $filename = time() . '_' . $originalName;
-            $path = $file->storeAs('documents', $filename, 'public');
-        }
-
+        // Store task without document path
         $task = Task::create([
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'due_date' => $validated['due_date'],
             'group_id' => $validated['group_id'] ?? null,
-            'document' => $path,
-            'original_filename' => $originalName,
             'created_by' => Auth::id(),
         ]);
 
+        // Save file to documents table
+        if ($request->hasFile('document')) {
+            $file = $request->file('document');
+            $originalName = $file->getClientOriginalName();
+            $filename = time() . '_' . $originalName;
+            $path = $file->storeAs('documents', $filename, 'public');
+
+            \App\Models\Document::create([
+                'task_id' => $task->id,
+                'user_id' => Auth::id(),
+                'filename' => $path,
+                'original_name' => $originalName,
+            ]);
+        }
+
+        // Sync users
         if (!empty($validated['assigned_user_id'])) {
             $task->users()->sync($validated['assigned_user_id']);
         }
@@ -137,7 +142,7 @@ class AcademicHeadController extends Controller
         }
 
         $filePath = storage_path('app/public/' . $task->document);
-        $originalName = $task->original_filename ?? basename($task->document);
+        $originalName = $task->original_name ?? basename($task->document);
 
         return response()->download($filePath, $originalName);
     }

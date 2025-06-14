@@ -36,17 +36,25 @@
     </div>
 
     {{-- Documents Section --}}
-    @if($task->document)
-            <div class="mb-4">
-                <strong>Document:</strong>
-                <p>
-                    <a href="{{ route('academic-head.tasks.download', $task->id) }}"
-                    class="text-blue-600 underline hover:text-blue-800">
-                    Download {{ $task->original_filename ?? 'Document' }}
-                    </a>
-                </p>
-            </div>
-        @endif
+    @if($task->documents && $task->documents->isNotEmpty())
+        <div class="mb-4">
+            <strong>Documents:</strong>
+            <ul class="list-disc ml-5">
+                @foreach ($task->documents as $document)
+                    <li class="mb-1">
+                        <a href="{{ route('documents.download', $document->id) }}" class="text-blue-600 underline">
+                            {{ $document->original_name }}
+                        </a>
+                        <span class="text-sm text-gray-500">
+                            uploaded by {{ $document->user->name ?? 'Unknown' }} on {{ $document->created_at->format('d M Y') }}
+                        </span>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @else
+        <p class="text-gray-500 italic">No documents uploaded.</p>
+    @endif
 
     {{-- Comments Section --}}
     <div class="mt-8">

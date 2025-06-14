@@ -185,4 +185,6 @@ class TaskController extends Controller
 
         return view('academic-head.tasks.activities', compact('tasks'));
     }
+
+
 }
