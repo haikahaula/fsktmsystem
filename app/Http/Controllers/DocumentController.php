@@ -12,9 +12,10 @@ class DocumentController extends Controller
 {
     public function index(Task $task)
     {
-        $documents = $task->documents; 
-        return view('academic-staff.tasks.documents.index', compact('task', 'documents'));
+        $documents = $task->documents()->with('user')->get();
+        return view('academic_staff.documents.index', compact('task', 'documents'));
     }
+
 
     public function store(Request $request)
     {

@@ -14,7 +14,7 @@
     <p><strong>Due Date:</strong> {{ $task->due_date }}</p>
 
     {{-- Documents Section --}}
-    @if ($task->documents && $task->documents->isNotEmpty())
+    {{-- @if ($task->documents && $task->documents->isNotEmpty())
         @foreach($task->documents as $document)
             <div class="mb-2">
                 <a href="{{ route('documents.download', $document->id) }}" class="text-blue-600 underline">
@@ -36,13 +36,13 @@
         @endforeach
     @else
         <p class="text-gray-500 italic">No documents uploaded.</p>
-    @endif
+    @endif --}}
 
     {{-- Status --}}
     <p><strong>Status:</strong> {{ ucfirst($task->status) }}</p>
 
     <!-- Show upload form only if user is assigned to the task -->
-    @if ($task->users->contains(Auth::id()))
+    {{-- @if ($task->users->contains(Auth::id()))
         <hr class="my-4">
 
         <h3 class="text-lg font-semibold mb-2">Upload Document</h3>
@@ -57,7 +57,7 @@
                 Upload
             </button>
         </form>
-    @endif
+    @endif --}}
 
     <hr class="my-4">
 

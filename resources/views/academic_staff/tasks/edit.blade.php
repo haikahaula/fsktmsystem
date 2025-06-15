@@ -19,7 +19,7 @@
         </div>
 
         <!-- Optional: Staff Upload (with current document display) -->
-        <div class="mb-4">
+        {{-- <div class="mb-4">
             <label for="document" class="block font-semibold mb-1">Documents</label>
             <input type="file" name="document" id="document" accept=".pdf,.doc,.docx,.txt,.pptx"
                    class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
@@ -32,7 +32,7 @@
                     </a>
                 </p>
             @endif
-        </div>
+        </div> --}}
 
         <!-- Submit -->
         <div class="flex justify-end">

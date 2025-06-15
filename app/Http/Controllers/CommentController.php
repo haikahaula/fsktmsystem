@@ -32,7 +32,8 @@ class CommentController extends Controller
 
 
         // Redirect to the passed redirect URL or fallback
-        return redirect($request->redirect_url ?? '/dashboard')->with('success', 'Comment added successfully.');
+        return redirect()->route('academic-staff.tasks.show', $request->task_id)
+                ->with('success', 'Comment added successfully.');    
     }
     
     public function edit(Comment $comment)
