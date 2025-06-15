@@ -41,7 +41,7 @@ class AcademicHeadController extends Controller
             'assigned_user_id' => 'nullable|array',
             'assigned_user_id.*' => 'exists:users,id',
             'group_id' => 'nullable|exists:groups,id',
-            'document' => 'nullable|file|mimes:pdf,doc,docx,txt|max:2048',
+            'documents.*' => 'nullable|file|mimes:pdf,doc,docx,txt|max:2048',
         ]);
 
         if (!empty($validated['assigned_user_id']) && !empty($validated['group_id'])) {
@@ -58,19 +58,21 @@ class AcademicHeadController extends Controller
         ]);
 
         // Save file to documents table
-        if ($request->hasFile('document')) {
-            $file = $request->file('document');
-            $originalName = $file->getClientOriginalName();
-            $filename = time() . '_' . $originalName;
-            $path = $file->storeAs('documents', $filename, 'public');
+        if ($request->hasFile('documents')) {
+            foreach ($request->file('documents') as $file) {
+                $originalName = $file->getClientOriginalName();
+                $filename = time() . '_' . $originalName;
+                $path = $file->storeAs('documents', $filename, 'public');
 
-            \App\Models\Document::create([
-                'task_id' => $task->id,
-                'user_id' => Auth::id(),
-                'filename' => $path,
-                'original_name' => $originalName,
-            ]);
+                \App\Models\Document::create([
+                    'task_id' => $task->id,
+                    'user_id' => Auth::id(),
+                    'filename' => $path,
+                    'original_name' => $originalName,
+                ]);
+            }
         }
+
 
         // Sync users
         if (!empty($validated['assigned_user_id'])) {
@@ -105,15 +107,11 @@ class AcademicHeadController extends Controller
             'assigned_user_id' => 'nullable|array',
             'assigned_user_id.*' => 'exists:users,id',
             'group_id' => 'nullable|exists:groups,id',
-            'document' => 'nullable|file|mimes:pdf,doc,docx,txt|max:2048',
+            'documents.*' => 'nullable|file|mimes:pdf,doc,docx,txt|max:2048',
         ]);
 
         if (!empty($validated['assigned_user_id']) && !empty($validated['group_id'])) {
             return back()->withErrors('Please assign the task to either users or a group, not both.')->withInput();
-        }
-
-        if ($request->hasFile('document')) {
-            $validated['document'] = $request->file('document')->store('documents', 'public');
         }
 
         $task->update([
@@ -121,8 +119,22 @@ class AcademicHeadController extends Controller
             'description' => $validated['description'] ?? null,
             'due_date' => $validated['due_date'] ?? null,
             'group_id' => $validated['group_id'] ?? null,
-            'document' => $validated['document'] ?? $task->document,
         ]);
+
+        if ($request->hasFile('documents')) {
+            foreach ($request->file('documents') as $file) {
+                $originalName = $file->getClientOriginalName();
+                $filename = time() . '_' . $originalName;
+                $path = $file->storeAs('documents', $filename, 'public');
+
+                \App\Models\Document::create([
+                    'task_id' => $task->id,
+                    'user_id' => Auth::id(),
+                    'filename' => $path,
+                    'original_name' => $originalName,
+                ]);
+            }
+        }
 
         if (!empty($validated['assigned_user_id'])) {
             $task->users()->sync($validated['assigned_user_id']);
@@ -132,6 +144,7 @@ class AcademicHeadController extends Controller
 
         return redirect()->route('academic-head.tasks.index')->with('success', 'Task updated successfully.');
     }
+
 
     public function download($id)
     {

@@ -24,7 +24,7 @@
                     Uploaded by {{ $document->user->name ?? 'Unknown' }} on {{ $document->created_at->format('d M Y') }}
                 </small>
 
-                @if(auth()->id() === $document->user_id || auth()->user()->hasRole('Admin'))
+                @if(auth()->id() === $document->user_id || auth()->user()->role === 'Admin')
                     <form action="{{ route('documents.destroy', $document->id) }}" method="POST" class="inline ml-2"
                         onsubmit="return confirm('Are you sure?');">
                         @csrf
