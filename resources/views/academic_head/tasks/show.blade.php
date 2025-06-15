@@ -25,9 +25,9 @@
                         {{ $user->name }} ({{ $user->email }})
                     </span>
                 @endforeach
-            @elseif ($task->assignedGroup)
+            @elseif ($task->group)
                 <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                    {{ $task->assignedGroup->name }}
+                    {{ $task->group->name }}
                 </span>
             @else
                 <span class="text-gray-500 text-sm">Unassigned</span>

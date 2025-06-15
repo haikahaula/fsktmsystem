@@ -22,10 +22,12 @@
                     <td class="px-4 py-2 border">{{ $index + 1 }}</td>
                     <td class="px-4 py-2 border">{{ $task->title }}</td>
                     <td class="px-4 py-2 border">
-                        @if ($task->users->isNotEmpty())
+                        @if ($task->group)
+                            <span class="text-green-700 font-semibold">{{ $task->group->name }}</span>
+                        @elseif ($task->users->isNotEmpty())
                             {{ $task->users->pluck('name')->join(', ') }}
                         @else
-                            <span class="text-gray-500 italic">Group Task</span>
+                            <span class="text-gray-500 italic">Unassigned</span>
                         @endif
                     </td>
                     <td class="px-4 py-2 border">{{ $task->due_date }}</td>

@@ -21,24 +21,22 @@
         </div>
 
         {{-- Assign to Users --}}
-        <div class="mb-4">
-            <label for="assigned_user_id" class="block text-sm font-medium text-gray-700">Assign to Users:</label>
-            <select id="assigned_user_id" name="assigned_user_id[]" multiple class="w-full border border-gray-300 p-2 rounded">
-                @foreach($users as $user)
-                    <option value="{{ $user->id }}" {{ $task->users->contains('id', $user->id) ? 'selected' : '' }}>
-                        {{ $user->name }} 
-                    </option>
+         <div class="mb-4">
+            <label class="block font-semibold mb-1">Assign to Users</label>
+            <select name="assigned_user_id[]" class="selectpicker w-full" multiple data-live-search="true" title="Select users">
+                @foreach ($users->where('role_id', '!=', 1) as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
                 @endforeach
             </select>
         </div>
 
         {{-- Group Assignment --}}
-        <div class="mb-4">
-            <label for="group_id" class="block text-sm font-medium text-gray-700">Group:</label>
-            <select name="group_id" id="group_id" class="w-full border border-gray-300 p-2 rounded">
+        <div class="mb-6">
+            <label class="block font-semibold mb-1">Assign to Group</label>
+            <select name="group_id" class="selectpicker w-full" data-live-search="true" title="-- Select Group --">
                 <option value="">-- Select Group --</option>
-                @foreach($groups as $group)
-                    <option value="{{ $group->id }}" {{ $task->group_id == $group->id ? 'selected' : '' }}>
+                @foreach ($groups as $group)
+                    <option value="{{ $group->id }}" {{ old('group_id') == $group->id ? 'selected' : '' }}>
                         {{ $group->name }}
                     </option>
                 @endforeach
@@ -51,7 +49,7 @@
             <input type="date" name="due_date" id="due_date" value="{{ old('due_date', $task->due_date) }}" required class="w-full border border-gray-300 p-2 rounded">
         </div>
 
-<div class="mb-4">
+        <div class="mb-4">
             <label for="documents" class="block text-sm font-medium text-gray-700">Upload Documents:</label>
             <input type="file" name="documents[]" id="documents" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.png" 
                 class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />

@@ -2,7 +2,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mt-6">
+<div class="max-w-6xl mx-auto p-6 bg-white rounded shadow">
+
 
     <!-- Head Documents Section -->
     <h2 class="text-lg font-semibold mb-2">Head Documents</h2>

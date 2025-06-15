@@ -31,16 +31,16 @@
                     <td class="px-4 py-2 border">{{ $index + 1 }}</td>
                     <td class="px-4 py-2 border">{{ $task->title }}</td>
                     <td class="px-4 py-2 border">
-                        @if ($task->users && $task->users->count())
+                       @if ($task->group)
+                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                                {{ $task->group->name }}
+                            </span>
+                        @elseif ($task->users && $task->users->count())
                             @foreach ($task->users as $user)
                                 <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1">
                                     {{ $user->name }}
                                 </span>
                             @endforeach
-                        @elseif ($task->assignedGroup)
-                            <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                                {{ $task->assignedGroup->name }}
-                            </span>
                         @else
                             <span class="text-gray-500 text-sm">Unassigned</span>
                         @endif

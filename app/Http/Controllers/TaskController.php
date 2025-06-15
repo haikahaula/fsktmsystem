@@ -58,6 +58,20 @@ class TaskController extends Controller
 
         $task = Task::create($data);
 
+        // assign to users in the selected group
+        if ($task->assigned_to_type === Group::class) {
+            $group = Group::with('users')->find($task->assigned_user_id);
+            if ($group) {
+                $task->users()->sync($group->users->pluck('id')->toArray());
+
+                // Optional: Notify each user in the group
+                foreach ($group->users as $member) {
+                    $member->notify(new TaskAssignedNotification($task));
+                }
+            }
+        }
+
+
         // Store multiple uploaded documents
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $file) {

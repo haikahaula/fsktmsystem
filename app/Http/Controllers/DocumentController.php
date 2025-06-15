@@ -52,17 +52,15 @@ class DocumentController extends Controller
 
     public function download($id)
     {
-        $document = Document::with('task.users')->findOrFail($id);
+        $document = Document::with('task.users', 'task.createdBy')->findOrFail($id);
         $user = Auth::user();
 
         $isUploader = $document->user_id === $user->id;
-        $isTaskMember = false;
+        $isTaskMember = $document->task && $document->task->users->contains($user->id);
+        $isTaskCreator = $document->task && $document->task->created_by === $user->id;
 
-        if ($document->task && $document->task->users) {
-            $isTaskMember = $document->task->users->contains($user->id);
-        }
-
-        if (!($isUploader || $isTaskMember)) {
+        // Benarkan jika pengguna ialah uploader, ahli task, atau pencipta task
+        if (!($isUploader || $isTaskMember || $isTaskCreator)) {
             abort(403, 'Unauthorized access to this document.');
         }
 

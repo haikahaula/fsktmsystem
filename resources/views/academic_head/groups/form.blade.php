@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="max-w-4xl mx-auto p-4 bg-white rounded shadow">
     <h1 class="text-2xl font-bold mb-6">{{ isset($group) ? 'Update Group' : 'Create Group' }}</h1>
 
     <form method="POST" action="{{ isset($group) ? route('academic-head.groups.update', $group->id) : route('academic-head.groups.store') }}">
@@ -22,7 +23,7 @@
         <div class="mb-4">
             <label class="block font-semibold mb-2">Team Members:</label>
             <div class="grid grid-cols-2 gap-2">
-                @foreach($users as $user)
+                @foreach($users->where('role_id', '!=', 1) as $user)
                     <label class="flex items-center space-x-2">
                         <input type="checkbox" name="users[]" value="{{ $user->id }}"
                             {{ isset($group) && $group->users->contains($user->id) ? 'checked' : '' }}>
@@ -38,4 +39,5 @@
             </button>  
         </div>
     </form>
+</div>
 @endsection

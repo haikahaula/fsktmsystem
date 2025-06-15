@@ -34,11 +34,6 @@ class Task extends Model
         return $this->belongsToMany(User::class, 'task_user', 'task_id', 'user_id');
     }
 
-    public function assignedGroup()
-    {
-        return $this->belongsTo(Group::class, 'group_id');
-    }
-
     public function group()
     {
         return $this->belongsTo(Group::class, 'group_id');

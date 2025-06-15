@@ -36,29 +36,27 @@
         </div>
 
         <div class="mb-4">
-            <label for="assigned_user_id" class="block font-semibold mb-1">Assign to User(s)</label>
-            <select name="assigned_user_id[]" multiple class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option value="">-- Select User (optional) --</option>
-                @foreach ($users as $user)
-                    <option value="{{ $user->id }}" {{ old('assigned_user_id') == $user->id ? 'selected' : '' }}>
-                        {{ $user->name }} ({{ $user->email }})
-                    </option>
+            <label class="block font-semibold mb-1">Assign to Users</label>
+            <select name="assigned_user_id[]" class="selectpicker w-full" multiple data-live-search="true" title="Select users">
+                @foreach ($users->where('role_id', '!=', 1) as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
                 @endforeach
             </select>
         </div>
 
         <div class="mb-6">
-            <label class="block font-semibold mb-1">Or assign to Group</label>
-            <select name="assigned_group_id" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option value="">-- Select Group (optional) --</option>
+            <label class="block font-semibold mb-1">Assign to Group</label>
+            <select name="group_id" class="selectpicker w-full" data-live-search="true" title="-- Select Group --">
+                <option value="">-- Select Group --</option>
                 @foreach ($groups as $group)
-                    <option value="{{ $group->id }}" {{ old('assigned_group_id') == $group->id ? 'selected' : '' }}>
+                    <option value="{{ $group->id }}" {{ old('group_id') == $group->id ? 'selected' : '' }}>
                         {{ $group->name }}
                     </option>
                 @endforeach
             </select>
             <p class="text-sm text-gray-500 mt-1">You can assign to a user or a group, but not both.</p>
         </div>
+
 
         <div class="mb-4">
             <label class="block font-semibold">Upload Documents:</label>

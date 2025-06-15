@@ -21,13 +21,16 @@ class AcademicHeadController extends Controller
 
     public function viewTasks()
     {
-        $tasks = Task::with(['users', 'assignedGroup'])->get();
+        $tasks = Task::with(['users', 'group'])
+                    ->where('created_by', Auth::id()) // hanya task yang dia sendiri assign
+                    ->paginate(10);
+
         return view('academic_head.tasks.index', compact('tasks'));
     }
 
     public function createTask()
     {
-        $users = User::all();
+        $users = User::where('role_id', '!=', 1)->get();
         $groups = Group::all();
         return view('academic_head.tasks.create', compact('users', 'groups'));
     }
@@ -43,12 +46,13 @@ class AcademicHeadController extends Controller
             'group_id' => 'nullable|exists:groups,id',
             'documents.*' => 'nullable|file|mimes:pdf,doc,docx,txt|max:2048',
         ]);
+        $validated['created_by'] = Auth::id();
 
         if (!empty($validated['assigned_user_id']) && !empty($validated['group_id'])) {
             return back()->withErrors('Please assign the task to either users or a group, not both.')->withInput();
         }
 
-        // Store task without document path
+        // Store task
         $task = Task::create([
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
@@ -57,7 +61,7 @@ class AcademicHeadController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        // Save file to documents table
+        // Save documents
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $file) {
                 $originalName = $file->getClientOriginalName();
@@ -73,10 +77,17 @@ class AcademicHeadController extends Controller
             }
         }
 
-
-        // Sync users
+        // Sync users (manual selection)
         if (!empty($validated['assigned_user_id'])) {
             $task->users()->sync($validated['assigned_user_id']);
+        }
+
+        //  assign group members
+        if (!empty($validated['group_id'])) {
+            $group = Group::with('users')->find($validated['group_id']);
+            if ($group) {
+                $task->users()->sync($group->users->pluck('id')->toArray());
+            }
         }
 
         return redirect()->route('academic-head.tasks.index')->with('success', 'Task created successfully.');
@@ -84,14 +95,14 @@ class AcademicHeadController extends Controller
 
     public function show(Task $task)
     {
-        $task->load(['users', 'assignedGroup', 'comments.user']);
+        $task->load(['users', 'group', 'comments.user']);
         return view('academic_head.tasks.show', compact('task')); // ← fixed path
     }
 
     public function edit(Task $task)
     {
-        $task->load(['users', 'assignedGroup']);
-        $users = User::all();
+        $task->load(['users', 'group']);
+        $users = User::where('role_id', '!=', 1)->get();
         $groups = Group::all();
         return view('academic_head.tasks.edit', compact('task', 'users', 'groups'));
     }
@@ -280,7 +291,10 @@ class AcademicHeadController extends Controller
 
     public function allTaskActivities()
     {
-        $tasks = Task::with(['users', 'documents.user'])->get();
+        $tasks = Task::with(['users', 'documents.user'])
+            ->where('created_by', Auth::id()) // hanya ambil task yang user ni buat
+            ->paginate(10);
+
         return view('academic_head.tasks.activities', compact('tasks'));
     }
 

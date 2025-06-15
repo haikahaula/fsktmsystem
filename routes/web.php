@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     })->name('notifications.markAllRead');
 });
 
+
 // Admin routes
 Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
     Route::resource('users', UserController::class);
@@ -82,6 +83,7 @@ Route::prefix('academic-head')->middleware(['auth'])->name('academic-head.')->gr
     Route::put('/tasks/{task}', [AcademicHeadController::class, 'updateTask'])->name('tasks.update');
     Route::delete('/tasks/{task}', [AcademicHeadController::class, 'destroy'])->name('tasks.destroy');
     Route::get('/tasks/{task}/download', [AcademicHeadController::class, 'download'])->name('tasks.download');
+    
 
     // Groups
     Route::get('/groups', [AcademicHeadController::class, 'viewGroups'])->name('groups.index');
