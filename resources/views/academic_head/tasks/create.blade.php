@@ -61,7 +61,7 @@
         <div class="mb-4">
             <label class="block font-semibold">Upload Documents:</label>
             <input type="file" name="documents[]" multiple class="w-full">
-            <p class="text-sm text-gray-500 mt-1">You can upload multiple files (pdf, docx, txt, jpg, png, max 2MB each).</p>
+            <p class="text-sm text-gray-500 mt-1">You can upload multiple files.</p>
         </div>
 
         <button type="submit"

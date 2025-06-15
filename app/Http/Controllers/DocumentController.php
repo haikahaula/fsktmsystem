@@ -21,7 +21,7 @@ class DocumentController extends Controller
     {
         $request->validate([
             'task_id' => 'required|exists:tasks,id',
-            'document' => 'required|file|mimes:pdf,doc,docx,xlsx,xls|max:2048',
+            'document' => 'required|file|mimes:pdf,doc,docx,xlsx,ppt,pptx,jpg,jpeg,png|max:20480', // max dalam kilobytes (20MB)
         ]);
 
         $file = $request->file('document');

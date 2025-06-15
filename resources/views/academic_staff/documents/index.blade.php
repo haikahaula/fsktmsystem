@@ -29,7 +29,7 @@
 
         <div class="mb-4">
             <label for="document" class="block font-medium">
-                Upload Document (PDF, DOC, DOCX, XLSX, XLS - max 2MB)
+                Upload Document (pdf,doc,docx,xlsx,ppt,pptx,jpg,jpeg,png - max 20MB)
             </label>
             <input type="file" name="document" id="document" class="mt-2">
         </div>

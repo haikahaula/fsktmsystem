@@ -36,7 +36,7 @@ class TaskController extends Controller
             'assigned_user_id' => 'nullable|exists:users,id',
             'assigned_group_id' => 'nullable|exists:groups,id',
             'due_date' => 'required|date',
-            'documents.*' => 'nullable|file|mimes:pdf,docx,txt,jpg,png|max:2048',
+            'documents.*' => 'nullable|file|mimes:pdf,doc,docx,xlsx,ppt,pptx,jpg,jpeg,png|max:20480', // max dalam kilobytes (20MB)
         ]);
 
         if (!$request->assigned_user_id && !$request->assigned_group_id) {
@@ -123,7 +123,7 @@ class TaskController extends Controller
             'assigned_user_id' => 'nullable|exists:users,id',
             'due_date' => 'required|date',
             'status' => 'nullable|string|in:pending,in progress,finished',
-            'documents.*' => 'nullable|file|mimes:pdf,docx,txt,jpg,png|max:2048',
+            'documents.*' => 'nullable|file|mimes:pdf,doc,docx,xlsx,ppt,pptx,jpg,jpeg,png|max:20480', // max dalam kilobytes (20MB)
         ]);
 
         $data = $request->only(['title', 'description', 'assigned_user_id', 'due_date', 'status']);

@@ -45,7 +45,7 @@ class AcademicHeadController extends Controller
             'assigned_user_id' => 'nullable|array',
             'assigned_user_id.*' => 'exists:users,id',
             'group_id' => 'nullable|exists:groups,id',
-            'documents.*' => 'nullable|file|mimes:pdf,doc,docx,txt|max:2048',
+            'documents.*' => 'nullable|mimes:pdf,doc,docx,xlsx,ppt,pptx,jpg,jpeg,png|max:20480', // max dalam kilobytes (20MB)
         ]);
         $validated['created_by'] = Auth::id();
 

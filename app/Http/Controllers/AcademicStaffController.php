@@ -107,7 +107,7 @@ class AcademicStaffController extends Controller
     public function uploadDocument(Request $request, Task $task)
     {
         $request->validate([
-            'staff_document' => 'required|file|mimes:pdf,doc,docx,txt,jpg,png|max:2048',
+            'staff_document' => 'required|file|mimes:pdf,doc,docx,xlsx,ppt,pptx,jpg,jpeg,png|max:20480', // max dalam kilobytes (20MB)
         ]);
 
         // Optional: check if user is assigned to this task
