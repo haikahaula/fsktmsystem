@@ -17,7 +17,10 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     @if ($user)
-                        @if(Str::contains($user->email, 'admin'))
+                        @php $role_id = $user->role_id; @endphp
+
+                        @if ($role_id == 1)
+                            {{-- Admin --}}
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 Admin Dashboard
                             </x-nav-link>
@@ -27,11 +30,9 @@
                             <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.index')">
                                 Manage Roles
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.index')">
-                                Manage Roles
-                            </x-nav-link>
 
-                        @elseif(Str::contains($user->email, 'head'))
+                        @elseif ($role_id == 2)
+                            {{-- Academic Head --}}
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 Head Dashboard
                             </x-nav-link>
@@ -39,13 +40,14 @@
                                 Manage Tasks
                             </x-nav-link>
                             <x-nav-link :href="route('academic-head.groups.index')" :active="request()->routeIs('academic-head.groups.index')">
-                                Manage Group
+                                Manage Groups
                             </x-nav-link>
                             <x-nav-link :href="route('academic-head.tasks.activities')" :active="request()->routeIs('academic-head.tasks.activities')">
                                 Task Activities
                             </x-nav-link>
 
-                        @elseif(Str::contains($user->email, 'staff'))
+                        @elseif ($role_id == 3)
+                            {{-- Academic Staff --}}
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 Staff Dashboard
                             </x-nav-link>
@@ -60,6 +62,7 @@
                             </x-nav-link>
                         @endif
                     @endif
+
                 </div>
             </div>
 

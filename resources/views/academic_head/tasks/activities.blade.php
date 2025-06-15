@@ -36,7 +36,7 @@
                                 @foreach ($task->documents as $document)
                                     <li>
                                         <a href="{{ route('documents.download', $document->id) }}" class="text-blue-600 underline">
-                                            {{ $document->filename }}
+                                            {{ $document->original_name }}
                                         </a>
                                         <small class="text-gray-500 block">
                                             Uploaded by {{ $document->user->name }} on {{ $document->created_at->format('d M Y') }}

@@ -10,15 +10,16 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\AcademicStaffController;
 use App\Http\Controllers\AcademicHeadController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 // Dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'show'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
