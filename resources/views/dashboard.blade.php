@@ -16,7 +16,7 @@
                 @if ($role_id == 1)
                     <p>You are logged in as <strong>Admin</strong></p>
                     <a href="{{ route('admin.users.index') }}" class="text-blue-600 underline">Manage Users</a>
-                    <a href="{{ route('admin.roles.index') }}" class="text-blue-600 underline">Manage Roles</a>
+                    <a href="{{ route('admin.roles.create') }}" class="text-blue-600 underline">Manage Roles</a>
 
                 @elseif ($role_id == 2)
                     <p>You are logged in as <strong>Academic Head</strong></p>

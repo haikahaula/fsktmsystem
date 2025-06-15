@@ -11,16 +11,15 @@ use App\Models\User;
 class RoleController extends Controller
 {
     public function index()
-    {
-        $roles = Role::all();
-        return view('admin.roles.index', compact('roles'));
-    }
+{
+    $roles = Role::all();
+    return view('admin.roles.index', compact('roles'));
+}
 
-        public function create()
-    {
-        $roles = Role::all(); // Fetch all roles
-        return view('admin.users.create', compact('roles'));
-    }
+public function create()
+{
+    return view('admin.roles.create');
+}
 
     public function store(Request $request)
     {
@@ -35,10 +34,9 @@ class RoleController extends Controller
         return redirect()->route('admin.roles.index')->with('success', 'Role created successfully.');
     }
 
-    public function edit(User $user)
+    public function edit(Role $role)
     {
-        $roles = Role::all(); // Fetch all roles
-        return view('admin.users.edit', compact('user', 'roles'));
+        return view('admin.roles.edit', compact('role'));
     }
 
     public function update(Request $request, Role $role)
@@ -59,4 +57,5 @@ class RoleController extends Controller
         $role->delete();
         return redirect()->route('admin.roles.index')->with('success', 'Role deleted successfully.');
     }
+
 }
