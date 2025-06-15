@@ -3,21 +3,18 @@
 namespace App\Notifications;
 
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\DatabaseMessage;
 
-
-class TaskStatusUpdatedNotification extends Notification implements ShouldQueue
+class TaskStatusUpdatedNotification extends Notification
 {
     use Queueable;
 
     protected $task;
     protected $updatedBy;
 
-    public function __construct(Task $task, User $updatedBy)
+    public function __construct(Task $task, $updatedBy)
     {
         $this->task = $task;
         $this->updatedBy = $updatedBy;
@@ -25,16 +22,15 @@ class TaskStatusUpdatedNotification extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database']; // Store in DB
     }
 
     public function toDatabase($notifiable)
     {
         return new DatabaseMessage([
             'title' => 'Task Status Updated',
-            'message' => "Task '{$this->task->title}' status has been updated to '{$this->task->status}'.",
+            'message' => "The task '{$this->task->title}' has been updated to '{$this->task->status}' by {$this->updatedBy->name}.",
             'task_id' => $this->task->id,
-            'updated_by' => $this->updatedBy->name,
         ]);
     }
 }

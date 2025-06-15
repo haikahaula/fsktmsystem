@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Models\Group;
 use App\Models\Comment;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Notifications\TaskAssignedNotification;
 
 class AcademicHeadController extends Controller
 {
@@ -80,13 +81,23 @@ class AcademicHeadController extends Controller
         // Sync users (manual selection)
         if (!empty($validated['assigned_user_id'])) {
             $task->users()->sync($validated['assigned_user_id']);
+
+            // Notify manually assigned users
+            foreach ($task->users as $user) {
+                $user->notify(new TaskAssignedNotification($task));
+            }
         }
 
-        //  assign group members
-        if (!empty($validated['group_id'])) {
+        // Assign group members
+        elseif (!empty($validated['group_id'])) {
             $group = Group::with('users')->find($validated['group_id']);
             if ($group) {
                 $task->users()->sync($group->users->pluck('id')->toArray());
+
+                // Notify group-assigned users
+                foreach ($group->users as $user) {
+                    $user->notify(new TaskAssignedNotification($task));
+                }
             }
         }
 

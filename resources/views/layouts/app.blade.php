@@ -28,59 +28,68 @@
     @include('layouts.navigation')
 
     <!-- Notifications -->
-    @auth
-        <div class="relative inline-block text-left">
-            <button id="notificationToggle" class="relative inline-flex items-center justify-center w-10 h-10 bg-white rounded-full hover:bg-gray-100 focus:outline-none">
-                🔔
-                @if (auth()->user()->unreadNotifications->count())
-                    <span class="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-500"></span>
+@auth
+<div class="fixed top-4 right-4 z-[1001]">
+    <button id="notificationToggle"
+        class="relative inline-flex items-center justify-center w-10 h-10 bg-white rounded-full hover:bg-gray-100 focus:outline-none">
+        🔔
+        @if (auth()->user()->unreadNotifications->count())
+            <span class="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-500"></span>
+        @endif
+    </button>
+</div>
+
+<!-- Moved outside so it's not cut off by container -->
+<div id="notificationDropdown"
+    class="hidden fixed top-16 right-4 w-80 max-w-[95vw] bg-white border border-gray-200 rounded-lg shadow-xl z-[1000]">
+    <div class="p-3 border-b font-semibold text-gray-700">
+        Notifications
+        <button class="float-right text-sm text-blue-500 hover:underline" onclick="markAllRead()">Mark all as read</button>
+    </div>
+    <div class="max-h-96 overflow-y-auto">
+        @forelse (auth()->user()->unreadNotifications as $notification)
+            <div class="px-4 py-3 hover:bg-gray-100 border-b">
+                <div class="text-sm font-semibold text-gray-800">{{ $notification->data['title'] }}</div>
+                <div class="text-sm text-gray-600">{{ $notification->data['message'] }}</div>
+                @if (isset($notification->data['task_id']))
+                    <a href="{{ route('notifications.view-task', [
+                        'task_id' => $notification->data['task_id'],
+                        'notification_id' => $notification->id
+                    ]) }}" class="text-blue-500 text-sm hover:underline">
+                        View Task
+                    </a>
                 @endif
-            </button>
-
-            <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                <div class="p-3 border-b font-semibold text-gray-700">
-                    Notifications
-                    <button class="float-right text-sm text-blue-500 hover:underline" onclick="markAllRead()">Mark all as read</button>
-                </div>
-                <div class="max-h-96 overflow-y-auto">
-                    @forelse (auth()->user()->unreadNotifications as $notification)
-                        <div class="px-4 py-3 hover:bg-gray-100 border-b">
-                            <div class="text-sm font-semibold text-gray-800">{{ $notification->data['title'] }}</div>
-                            <div class="text-sm text-gray-600">{{ $notification->data['message'] }}</div>
-                            @if (isset($notification->data['task_id']))
-                                <a href="{{ route('tasks.show', $notification->data['task_id']) }}" class="text-blue-500 text-sm hover:underline">View Task</a>
-                            @endif
-                        </div>
-                    @empty
-                        <div class="px-4 py-3 text-gray-500 text-sm text-center">
-                            No new notifications
-                        </div>
-                    @endforelse
-                </div>
             </div>
-        </div>
+        @empty
+            <div class="px-4 py-3 text-gray-500 text-sm text-center">
+                No new notifications
+            </div>
+        @endforelse
+    </div>
+</div>
 
-        <script>
-            const toggleBtn = document.getElementById('notificationToggle');
-            const dropdown = document.getElementById('notificationDropdown');
+<script>
+    const toggleBtn = document.getElementById('notificationToggle');
+    const dropdown = document.getElementById('notificationDropdown');
 
-            toggleBtn.addEventListener('click', () => {
-                dropdown.classList.toggle('hidden');
-            });
+    toggleBtn.addEventListener('click', () => {
+        dropdown.classList.toggle('hidden');
+    });
 
-            function markAllRead() {
-                fetch("{{ route('notifications.markAllRead') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                }).then(() => {
-                    window.location.reload();
-                });
+    function markAllRead() {
+        fetch("{{ route('notifications.markAllRead') }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
             }
-        </script>
-    @endauth
+        }).then(() => {
+            window.location.reload();
+        });
+    }
+</script>
+@endauth
+
 
     <!-- Page Heading -->
     @isset($header)
@@ -98,7 +107,7 @@
     @endif
 
     <!-- Page Content -->
-    <main>
+    <main class="mt-5">
         @yield('content')
     </main>
 </div>

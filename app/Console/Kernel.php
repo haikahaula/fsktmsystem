@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Models\Task;
 use App\Models\User;
 use App\Notifications\TaskDueReminder;
+use App\Notifications\TaskDueReminderNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -15,7 +16,7 @@ class Kernel extends ConsoleKernel
      * Register the commands for the application.
      */
     protected $commands = [
-        \App\Console\Commands\SendDueTaskReminders::class, // add your custom command here
+        \App\Console\Commands\SendDueDateReminder::class, // add your custom command here
     ];
 
     /**
@@ -24,14 +25,20 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            $tasks = Task::whereDate('due_date', now()->addDays(2))
-                        ->where('status', '!=', 'finished')
-                        ->get();
+            $dates = [2, 1, 0]; // in 2 days, 1 day, today
 
-            foreach ($tasks as $task) {
-                $user = User::find($task->assigned_to);
-                if ($user) {
-                    $user->notify(new TaskDueReminder($task));
+            foreach ($dates as $days) {
+                $targetDate = now()->addDays($days)->toDateString();
+
+                $tasks = Task::with('users')
+                    ->whereDate('due_date', $targetDate)
+                    ->where('status', '!=', 'finished')
+                    ->get();
+
+                foreach ($tasks as $task) {
+                    foreach ($task->users as $user) {
+                        $user->notify(new TaskDueReminderNotification($task, $days));
+                    }
                 }
             }
         })->dailyAt('08:00');

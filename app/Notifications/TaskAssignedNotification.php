@@ -2,17 +2,15 @@
 
 namespace App\Notifications;
 
-use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\DatabaseMessage;
+use App\Models\Task;
 
-class TaskAssignedNotification extends Notification implements ShouldQueue
+class TaskAssignedNotification extends Notification
 {
     use Queueable;
 
-    protected $task;
+    public $task;
 
     public function __construct(Task $task)
     {
@@ -21,16 +19,15 @@ class TaskAssignedNotification extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database']; // store in DB
     }
 
-    public function toDatabase($notifiable)
+    public function toArray($notifiable)
     {
-        return new DatabaseMessage([
+        return [
             'title' => 'New Task Assigned',
-            'message' => "You have been assigned a task: {$this->task->title}",
+            'message' => 'You have been assigned to the task: ' . $this->task->title,
             'task_id' => $this->task->id,
-            'assigned_by' => $this->task->creator->name ?? 'System',
-        ]);
+        ];
     }
 }

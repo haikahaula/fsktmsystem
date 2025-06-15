@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Task;
 use App\Models\Group;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\TaskStatusUpdatedNotification;
 
 
 class AcademicStaffController extends Controller
@@ -69,6 +70,7 @@ class AcademicStaffController extends Controller
         return view('academic_staff.tasks.edit', compact('task'));
     }
 
+
     public function update(Request $request, $id)
     {
         $userId = Auth::id();
@@ -78,14 +80,10 @@ class AcademicStaffController extends Controller
             'status' => 'required|in:pending,in progress,finished',
         ]);
 
-        // Log debug info
-        Log::info('Attempting to update task status', [
-            'task_id' => $id,
-            'user_id' => $userId,
-        ]);
-
-        // TEMP: Remove restrictions to test update functionality
+        // Fetch task
         $task = Task::findOrFail($id);
+        $originalStatus = $task->status;
+
         $task->status = $validated['status'];
         $task->save();
 
@@ -94,10 +92,18 @@ class AcademicStaffController extends Controller
             'new_status' => $task->status,
         ]);
 
+        // Notify the Academic Head if status has changed
+        if ($originalStatus !== $validated['status'] && $task->created_by) {
+            $creator = \App\Models\User::find($task->created_by);
+            if ($creator) {
+                $creator->notify(new TaskStatusUpdatedNotification($task, Auth::user()));
+            }
+        }
+
         return redirect()->route('academic-staff.tasks.index')->with('success', 'Task status updated.');
     }
+
     
-    // Document
     public function uploadDocument(Request $request, Task $task)
     {
         $request->validate([

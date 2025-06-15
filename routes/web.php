@@ -11,6 +11,7 @@ use App\Http\Controllers\AcademicStaffController;
 use App\Http\Controllers\AcademicHeadController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -41,6 +42,8 @@ Route::middleware('auth')->group(function () {
         Auth::user()->unreadNotifications->markAsRead();    
         return response()->json(['status' => 'ok']);
     })->name('notifications.markAllRead');
+    Route::get('/notifications/view-task/{task_id}/{notification_id}', [NotificationController::class, 'viewTask'])
+    ->name('notifications.view-task');
 });
 
 
